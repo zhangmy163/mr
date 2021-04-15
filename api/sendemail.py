@@ -3,11 +3,17 @@ import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
 import configparser
+from pathlib import Path
+
+base_dir=Path(__file__).resolve().parent
+conf_dir=str(base_dir.parent)+"/conf"
+conf_mappingfile=conf_dir+"/emailmapping.conf"
+conf_appfile=conf_dir+"/application.conf"
 
 class sendEM():
     def _get_config(self):
         cf = configparser.ConfigParser()
-        cf.read('../conf/application.conf') 
+        cf.read(conf_appfile) 
         self.secs = cf.sections()
         self.options = cf.options("email")
         self.mail_host=cf.get("email", "mail_host")
@@ -19,7 +25,7 @@ class sendEM():
     def get_config(self,op):
         self._get_config()
         cf = configparser.ConfigParser()
-        cf.read('../conf/emailmapping.conf') 
+        cf.read(conf_mappingfile) 
         self.secs = cf.sections()
         self.options = cf.options(op)
         self.receivers = cf.get(op, "receivers")

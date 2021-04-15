@@ -3,28 +3,19 @@ from flask import request
 from flask import redirect
 from flask import jsonify
 import json5
-import configparser
 
-cf = configparser.ConfigParser()
-cf.read('./conf/application.conf')
-
-# 每个section由[]包裹
-secs = cf.sections()
-
-# 获取某个section名为kafka所对应的键
-options = cf.options("kafka")
-
-# 获取[kafka]中host对应的值
-ad = cf.get("kafka", "address")
-print(ad)
+from api.sendemail import sendEM
+from api.senddingding import send_ding
 
 app = Flask(__name__)
 @app.route('/sendemail', methods=['GET','POST'])
 
 def sendemail():
-    print(request.headers)
-    print(request.json)
-    
+    op=request.json.get('op')
+    subject=request.json.get('subject')
+    content=request.json.get('content')
+    s=sendEM()
+    s.sendmsg(op,subject,content)
     return json5.dumps({
     'code': '0'
   })
@@ -32,17 +23,13 @@ def sendemail():
 @app.route('/senddingding', methods=['GET','POST'])
 
 def senddingding():
-    print(request.headers)
-    print(request.json)
-    # print(request.form)
-    # print(request.form['user'])
-    # print(request.form.get('user'))
-    # print(request.form.getlist('user'))
-    # print(request.form.get('nickname', default='little apple'))
-    return 'ok'
-#     return json5.dumps({
-#     'code': '0'
-#   })
+    op=request.json.get('op')
+    content=request.json.get('content')
+    send_ding(op,content,"监控")
+    
+    return json5.dumps({
+    'code': '0'
+  })
 
 if  __name__  ==  '__main__':
 

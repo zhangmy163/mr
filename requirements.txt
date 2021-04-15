@@ -1,3 +1,4 @@
 Flask==1.1.2
 json5==0.9.5
+urllib==1.25.9
 pykafka==2.8.0
